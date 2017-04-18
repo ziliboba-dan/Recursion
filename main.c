@@ -53,23 +53,29 @@ int fib_iter(int first, int second, int n, int tr)
 	return fib_iter(second, first + second, n, tr); 
 }
 
-char *IntToStr(int value, char *str, int base)
+char *IntToStr(int value, char *str, int base, int count, int check)
 {  	
-	int count = 0;
-	do {
-		int digit = value % base;
-		str[count++] = (digit > 9) ? digit - 10 +'A' : digit + '0';
-	} while ((value /= base) != 0);
-
-	str[count] = '\0';
-	int i;
-	printf("%d\n", count);
-	for (i = 0; i < count / 2; i++) {
-		char symbol = str[i];
-		str[i] = str[count - i - 1];
-		str[count - i - 1] = symbol;
+	printf("Count=%d\n", count);
+	int buf = value;
+	if (check == 0) {
+		while(value != 0) {
+			value = value/base;
+			count++;
+		}
+		printf("Count1=%d\n", count);
+		str[count] = '\0';
+		check = 1;
 	}
-	return str;
+	if (buf != 0) {
+		count--;
+		int digit = buf % base;
+		str[count] = (digit > 9) ? digit - 10 +'A' : digit + '0';
+		buf = buf/base;
+		return IntToStr(buf, str, base, count, check);
+	}
+	else {	
+		return str;
+	}
 }
 
 int main() 
@@ -105,7 +111,9 @@ int main()
 	int base;
 	scanf("%d", &base);
 	char str[20];
-	printf("%s\n", IntToStr(kol, str, base));
+	int trp = 0;
+	int check = 0;
+	printf("%s\n", IntToStr(kol, str, base, trp, check));
 
 	return 0;
 }
